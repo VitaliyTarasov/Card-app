@@ -9,6 +9,8 @@ class Card extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['title', 'order', 'list_id', 'user_id'];
+
     public function list()
     {
         return $this->belongsTo(CardList::class, 'list_id');
