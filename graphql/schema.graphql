@@ -17,7 +17,12 @@ type Query {
       "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
       name: String @where(operator: "like")
     ): [User!]! @paginate(defaultCount: 10)
+
     board(id: ID! @eq): Board @find
+}
+
+type Mutation {
+    cardAdd(input: CardAddInput! @spread): Card! @create
 }
 
 "Account of a person who utilizes this application."
@@ -70,4 +75,11 @@ type Card {
     order: Int!
     list: CardList! @belongsTo
     user: User! @belongsTo
+}
+
+input CardAddInput {
+    title: String!
+    order: Int!
+    list_id: ID!
+    user_id: ID!
 }

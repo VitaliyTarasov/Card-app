@@ -9,8 +9,8 @@
         <script src="{{ mix('js/app.js') }}" defer></script>
     
     </head>
-    <body class="h-screen text-gray-600">
-        <div id="app" class="h-full bg-purple-400">
+    <body class="text-gray-600">
+        <div id="app" class="h-full bg-purple-600">
             <Board></Board> 
         </div>
     </body>
