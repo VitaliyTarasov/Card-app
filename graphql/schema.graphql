@@ -22,7 +22,8 @@ type Query {
 }
 
 type Mutation {
-    cardAdd(input: CardAddInput! @spread): Card! @create
+    cardAdd(input: CardAddInput @spread): Card! @create
+    cardDelete(id: ID!): Card @delete
 }
 
 "Account of a person who utilizes this application."
@@ -65,6 +66,7 @@ type CardList {
     title: String!
     cards: [Card!]! @hasMany
     board: Board! @belongsTo
+    board_id: ID!
 }
 
 type Card {
