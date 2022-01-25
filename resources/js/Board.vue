@@ -11,7 +11,10 @@
                 <span v-else>{{ board.title }}</span>
             </div>
             <div class="flex flex-1 items-start overflow-x-auto mx-2" v-if="board">
-                <List :list="list" v-for="list in board.lists" :key="list.id"></List>
+                <List :list="list" v-for="list in board.lists" :key="list.id" 
+                @card-deleted="updateQueryCache($event)" 
+                @card-added="updateQueryCache($event)"
+                @card-updated="updateQueryCache($event)"></List>
             </div>
       </div>
     </div>
@@ -23,6 +26,9 @@
 import gql from 'graphql-tag';
 import List from './components/List';
 import BoardQuery from './graphql/Board.gql';
+import { EVENT_CARD_ADDED } from './constants';
+import { EVENT_CARD_DELETED } from './constants';
+import { EVENT_CARD_UPDATED } from './constants';
 
 export default {
     components: {List},
@@ -32,6 +38,34 @@ export default {
             variables: {
                 id: 1
             }
+        }
+    },
+    methods : {
+        updateQueryCache(event) {
+            const data = event.store.readQuery({
+            query: BoardQuery,
+            variables: {
+                id: Number(this.board.id)
+            }
+            });
+
+            switch (event.type) {
+                case EVENT_CARD_ADDED:
+                    data.board.lists.find(list => list.id == event.listId).cards.push(event.data);
+                    break;
+
+                case EVENT_CARD_DELETED:
+                    data.board.lists.find(list => list.id == event.listId).cards 
+                    = data.board.lists.find(list => list.id == event.listId).cards.filter(card => card.id != event.data.id);
+                    break;
+                
+                case EVENT_CARD_UPDATED:
+                    data.board.lists.find(list => list.id == event.listId).cards.filter(card => card.id == event.data.id).title = event.data.title;
+                    break;
+            }
+
+            
+            event.store.writeQuery({ query: BoardQuery, data});
         }
     }
 };

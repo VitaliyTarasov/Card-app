@@ -7573,6 +7573,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_List__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/List */ "./resources/js/components/List.vue");
 /* harmony import */ var _graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./graphql/Board.gql */ "./resources/js/graphql/Board.gql");
 /* harmony import */ var _graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./constants */ "./resources/js/constants.js");
 //
 //
 //
@@ -7594,6 +7595,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+
+
+
 
 
 
@@ -7607,6 +7614,47 @@ __webpack_require__.r(__webpack_exports__);
       variables: {
         id: 1
       }
+    }
+  },
+  methods: {
+    updateQueryCache: function updateQueryCache(event) {
+      var data = event.store.readQuery({
+        query: (_graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1___default()),
+        variables: {
+          id: Number(this.board.id)
+        }
+      });
+
+      switch (event.type) {
+        case _constants__WEBPACK_IMPORTED_MODULE_2__.EVENT_CARD_ADDED:
+          data.board.lists.find(function (list) {
+            return list.id == event.listId;
+          }).cards.push(event.data);
+          break;
+
+        case _constants__WEBPACK_IMPORTED_MODULE_2__.EVENT_CARD_DELETED:
+          data.board.lists.find(function (list) {
+            return list.id == event.listId;
+          }).cards = data.board.lists.find(function (list) {
+            return list.id == event.listId;
+          }).cards.filter(function (card) {
+            return card.id != event.data.id;
+          });
+          break;
+
+        case _constants__WEBPACK_IMPORTED_MODULE_2__.EVENT_CARD_UPDATED:
+          data.board.lists.find(function (list) {
+            return list.id == event.listId;
+          }).cards.filter(function (card) {
+            return card.id == event.data.id;
+          }).title = event.data.title;
+          break;
+      }
+
+      event.store.writeQuery({
+        query: (_graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1___default()),
+        data: data
+      });
     }
   }
 });
@@ -7624,6 +7672,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../graphql/CardDelete.gql */ "./resources/js/graphql/CardDelete.gql");
+/* harmony import */ var _graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../graphql/CardUpdate.gql */ "./resources/js/graphql/CardUpdate.gql");
+/* harmony import */ var _graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../constants */ "./resources/js/constants.js");
+/* harmony import */ var _CardEditor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CardEditor */ "./resources/js/components/CardEditor.vue");
 //
 //
 //
@@ -7634,9 +7688,64 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+
+
+
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    CardEditor: _CardEditor__WEBPACK_IMPORTED_MODULE_3__["default"]
+  },
   props: {
     card: Object
+  },
+  data: function data() {
+    return {
+      editing: false,
+      title: this.card.title
+    };
+  },
+  methods: {
+    cardDelete: function cardDelete() {
+      var self = this;
+      this.$apollo.mutate({
+        mutation: (_graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_0___default()),
+        variables: {
+          id: this.card.id
+        },
+        update: function update(store, _ref) {
+          var cardDelete = _ref.data.cardDelete;
+          self.$emit("deleted", {
+            store: store,
+            data: cardDelete,
+            type: _constants__WEBPACK_IMPORTED_MODULE_2__.EVENT_CARD_DELETED
+          });
+        }
+      });
+    },
+    cardUpdate: function cardUpdate() {
+      var self = this;
+      this.$apollo.mutate({
+        mutation: (_graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_1___default()),
+        variables: {
+          id: this.card.id,
+          title: this.title
+        },
+        update: function update(store, _ref2) {
+          var cardUpdate = _ref2.data;
+          self.$emit("updated", {
+            store: store,
+            data: cardUpdate,
+            type: _constants__WEBPACK_IMPORTED_MODULE_2__.EVENT_CARD_UPDATED
+          });
+          self.editing = false;
+        }
+      });
+    }
   }
 });
 
@@ -7653,31 +7762,71 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ["value", "label"],
+  mounted: function mounted() {
+    this.$refs.card.focus();
+  },
+  methods: {
+    closed: function closed() {
+      this.$emit("closed");
+    },
+    saved: function saved() {
+      this.$emit("saved");
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CardEditorAdd.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CardEditorAdd.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var _graphql_CardAdd_gql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../graphql/CardAdd.gql */ "./resources/js/graphql/CardAdd.gql");
 /* harmony import */ var _graphql_CardAdd_gql__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_graphql_CardAdd_gql__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../graphql/Board.gql */ "./resources/js/graphql/Board.gql");
 /* harmony import */ var _graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../constants */ "./resources/js/constants.js");
+/* harmony import */ var _CardEditor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CardEditor */ "./resources/js/components/CardEditor.vue");
 //
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    CardEditor: _CardEditor__WEBPACK_IMPORTED_MODULE_3__["default"]
+  },
   props: {
     list: Object
   },
@@ -7701,22 +7850,14 @@ __webpack_require__.r(__webpack_exports__);
         },
         update: function update(store, _ref) {
           var cardAdd = _ref.data.cardAdd;
-          var data = store.readQuery({
-            query: (_graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1___default()),
-            variables: {
-              id: Number(self.list.board_id)
-            }
+          self.$emit("added", {
+            store: store,
+            data: cardAdd,
+            type: _constants__WEBPACK_IMPORTED_MODULE_2__.EVENT_CARD_ADDED
           });
-          data.board.lists.find(function (list) {
-            return list.id == self.list.id;
-          }).cards.push(cardAdd);
-          store.writeQuery({
-            query: (_graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1___default()),
-            data: data
-          });
+          self.closed();
         }
       });
-      this.closed();
     },
     closed: function closed() {
       this.$emit("closed");
@@ -7739,7 +7880,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Card__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Card */ "./resources/js/components/Card.vue");
 /* harmony import */ var _AddCard__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddCard */ "./resources/js/components/AddCard.vue");
-/* harmony import */ var _CardEditor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CardEditor */ "./resources/js/components/CardEditor.vue");
+/* harmony import */ var _CardEditorAdd__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CardEditorAdd */ "./resources/js/components/CardEditorAdd.vue");
 //
 //
 //
@@ -7758,7 +7899,7 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     Card: _Card__WEBPACK_IMPORTED_MODULE_0__["default"],
     AddCard: _AddCard__WEBPACK_IMPORTED_MODULE_1__["default"],
-    CardEditor: _CardEditor__WEBPACK_IMPORTED_MODULE_2__["default"]
+    CardEditorAdd: _CardEditorAdd__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   props: {
     list: Object
@@ -7836,6 +7977,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
 
 window._ = lodash__WEBPACK_IMPORTED_MODULE_0__;
+
+/***/ }),
+
+/***/ "./resources/js/constants.js":
+/*!***********************************!*\
+  !*** ./resources/js/constants.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "EVENT_CARD_ADDED": () => (/* binding */ EVENT_CARD_ADDED),
+/* harmony export */   "EVENT_CARD_DELETED": () => (/* binding */ EVENT_CARD_DELETED),
+/* harmony export */   "EVENT_CARD_UPDATED": () => (/* binding */ EVENT_CARD_UPDATED)
+/* harmony export */ });
+var EVENT_CARD_ADDED = "EVENT_CARD_ADDED";
+var EVENT_CARD_DELETED = "EVENT_CARD_DELETED";
+var EVENT_CARD_UPDATED = "EVENT_CARD_UPDATED";
 
 /***/ }),
 
@@ -8182,8 +8342,8 @@ gql["default"] = gql;
 /***/ ((module) => {
 
 
-    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Board"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"board"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"color"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"lists"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"board_id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"cards"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"order"},"arguments":[],"directives":[]}]}}]}}]}}]}}],"loc":{"start":0,"end":256}};
-    doc.loc.source = {"body":"query Board($id: ID!){\n    board(id: $id) {\n        title\n        color\n        lists {\n            id\n            title\n            board_id\n            cards {\n                id\n                title\n                order\n            }\n        }\n    }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
+    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Board"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"board"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"color"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"lists"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"board_id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"cards"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"order"},"arguments":[],"directives":[]}]}}]}}]}}]}}],"loc":{"start":0,"end":267}};
+    doc.loc.source = {"body":"query Board($id: ID!){\n    board(id: $id) {\n        id\n        title\n        color\n        lists {\n            id\n            title\n            board_id\n            cards {\n                id\n                title\n                order\n            }\n        }\n    }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
   
 
     var names = {};
@@ -8434,6 +8594,268 @@ gql["default"] = gql;
     module.exports = doc;
     
         module.exports.CardAdd = oneQuery(doc, "CardAdd");
+        
+
+
+/***/ }),
+
+/***/ "./resources/js/graphql/CardDelete.gql":
+/*!*********************************************!*\
+  !*** ./resources/js/graphql/CardDelete.gql ***!
+  \*********************************************/
+/***/ ((module) => {
+
+
+    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cardDelete"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":65}};
+    doc.loc.source = {"body":"mutation($id: ID!) {\n    cardDelete(id: $id) {\n        id\n    }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
+  
+
+    var names = {};
+    function unique(defs) {
+      return defs.filter(
+        function(def) {
+          if (def.kind !== 'FragmentDefinition') return true;
+          var name = def.name.value
+          if (names[name]) {
+            return false;
+          } else {
+            names[name] = true;
+            return true;
+          }
+        }
+      )
+    }
+  
+
+    // Collect any fragment/type references from a node, adding them to the refs Set
+    function collectFragmentReferences(node, refs) {
+      if (node.kind === "FragmentSpread") {
+        refs.add(node.name.value);
+      } else if (node.kind === "VariableDefinition") {
+        var type = node.type;
+        if (type.kind === "NamedType") {
+          refs.add(type.name.value);
+        }
+      }
+
+      if (node.selectionSet) {
+        node.selectionSet.selections.forEach(function(selection) {
+          collectFragmentReferences(selection, refs);
+        });
+      }
+
+      if (node.variableDefinitions) {
+        node.variableDefinitions.forEach(function(def) {
+          collectFragmentReferences(def, refs);
+        });
+      }
+
+      if (node.definitions) {
+        node.definitions.forEach(function(def) {
+          collectFragmentReferences(def, refs);
+        });
+      }
+    }
+
+    var definitionRefs = {};
+    (function extractReferences() {
+      doc.definitions.forEach(function(def) {
+        if (def.name) {
+          var refs = new Set();
+          collectFragmentReferences(def, refs);
+          definitionRefs[def.name.value] = refs;
+        }
+      });
+    })();
+
+    function findOperation(doc, name) {
+      for (var i = 0; i < doc.definitions.length; i++) {
+        var element = doc.definitions[i];
+        if (element.name && element.name.value == name) {
+          return element;
+        }
+      }
+    }
+
+    function oneQuery(doc, operationName) {
+      // Copy the DocumentNode, but clear out the definitions
+      var newDoc = {
+        kind: doc.kind,
+        definitions: [findOperation(doc, operationName)]
+      };
+      if (doc.hasOwnProperty("loc")) {
+        newDoc.loc = doc.loc;
+      }
+
+      // Now, for the operation we're running, find any fragments referenced by
+      // it or the fragments it references
+      var opRefs = definitionRefs[operationName] || new Set();
+      var allRefs = new Set();
+      var newRefs = new Set();
+
+      // IE 11 doesn't support "new Set(iterable)", so we add the members of opRefs to newRefs one by one
+      opRefs.forEach(function(refName) {
+        newRefs.add(refName);
+      });
+
+      while (newRefs.size > 0) {
+        var prevRefs = newRefs;
+        newRefs = new Set();
+
+        prevRefs.forEach(function(refName) {
+          if (!allRefs.has(refName)) {
+            allRefs.add(refName);
+            var childRefs = definitionRefs[refName] || new Set();
+            childRefs.forEach(function(childRef) {
+              newRefs.add(childRef);
+            });
+          }
+        });
+      }
+
+      allRefs.forEach(function(refName) {
+        var op = findOperation(doc, refName);
+        if (op) {
+          newDoc.definitions.push(op);
+        }
+      });
+
+      return newDoc;
+    }
+    
+    module.exports = doc;
+    
+
+
+/***/ }),
+
+/***/ "./resources/js/graphql/CardUpdate.gql":
+/*!*********************************************!*\
+  !*** ./resources/js/graphql/CardUpdate.gql ***!
+  \*********************************************/
+/***/ ((module) => {
+
+
+    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CardUpdate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"title"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cardUpdate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"title"},"value":{"kind":"Variable","name":{"kind":"Name","value":"title"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"order"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":136}};
+    doc.loc.source = {"body":"mutation CardUpdate($id: ID!, $title: String) {\n    cardUpdate(id: $id, title: $title) {\n        id\n        title\n        order\n    }\n}\n","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
+  
+
+    var names = {};
+    function unique(defs) {
+      return defs.filter(
+        function(def) {
+          if (def.kind !== 'FragmentDefinition') return true;
+          var name = def.name.value
+          if (names[name]) {
+            return false;
+          } else {
+            names[name] = true;
+            return true;
+          }
+        }
+      )
+    }
+  
+
+    // Collect any fragment/type references from a node, adding them to the refs Set
+    function collectFragmentReferences(node, refs) {
+      if (node.kind === "FragmentSpread") {
+        refs.add(node.name.value);
+      } else if (node.kind === "VariableDefinition") {
+        var type = node.type;
+        if (type.kind === "NamedType") {
+          refs.add(type.name.value);
+        }
+      }
+
+      if (node.selectionSet) {
+        node.selectionSet.selections.forEach(function(selection) {
+          collectFragmentReferences(selection, refs);
+        });
+      }
+
+      if (node.variableDefinitions) {
+        node.variableDefinitions.forEach(function(def) {
+          collectFragmentReferences(def, refs);
+        });
+      }
+
+      if (node.definitions) {
+        node.definitions.forEach(function(def) {
+          collectFragmentReferences(def, refs);
+        });
+      }
+    }
+
+    var definitionRefs = {};
+    (function extractReferences() {
+      doc.definitions.forEach(function(def) {
+        if (def.name) {
+          var refs = new Set();
+          collectFragmentReferences(def, refs);
+          definitionRefs[def.name.value] = refs;
+        }
+      });
+    })();
+
+    function findOperation(doc, name) {
+      for (var i = 0; i < doc.definitions.length; i++) {
+        var element = doc.definitions[i];
+        if (element.name && element.name.value == name) {
+          return element;
+        }
+      }
+    }
+
+    function oneQuery(doc, operationName) {
+      // Copy the DocumentNode, but clear out the definitions
+      var newDoc = {
+        kind: doc.kind,
+        definitions: [findOperation(doc, operationName)]
+      };
+      if (doc.hasOwnProperty("loc")) {
+        newDoc.loc = doc.loc;
+      }
+
+      // Now, for the operation we're running, find any fragments referenced by
+      // it or the fragments it references
+      var opRefs = definitionRefs[operationName] || new Set();
+      var allRefs = new Set();
+      var newRefs = new Set();
+
+      // IE 11 doesn't support "new Set(iterable)", so we add the members of opRefs to newRefs one by one
+      opRefs.forEach(function(refName) {
+        newRefs.add(refName);
+      });
+
+      while (newRefs.size > 0) {
+        var prevRefs = newRefs;
+        newRefs = new Set();
+
+        prevRefs.forEach(function(refName) {
+          if (!allRefs.has(refName)) {
+            allRefs.add(refName);
+            var childRefs = definitionRefs[refName] || new Set();
+            childRefs.forEach(function(childRef) {
+              newRefs.add(childRef);
+            });
+          }
+        });
+      }
+
+      allRefs.forEach(function(refName) {
+        var op = findOperation(doc, refName);
+        if (op) {
+          newDoc.definitions.push(op);
+        }
+      });
+
+      return newDoc;
+    }
+    
+    module.exports = doc;
+    
+        module.exports.CardUpdate = oneQuery(doc, "CardUpdate");
         
 
 
@@ -29750,6 +30172,45 @@ component.options.__file = "resources/js/components/CardEditor.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/CardEditorAdd.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/CardEditorAdd.vue ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _CardEditorAdd_vue_vue_type_template_id_dd12072e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CardEditorAdd.vue?vue&type=template&id=dd12072e& */ "./resources/js/components/CardEditorAdd.vue?vue&type=template&id=dd12072e&");
+/* harmony import */ var _CardEditorAdd_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CardEditorAdd.vue?vue&type=script&lang=js& */ "./resources/js/components/CardEditorAdd.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CardEditorAdd_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CardEditorAdd_vue_vue_type_template_id_dd12072e___WEBPACK_IMPORTED_MODULE_0__.render,
+  _CardEditorAdd_vue_vue_type_template_id_dd12072e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/CardEditorAdd.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/List.vue":
 /*!******************************************!*\
   !*** ./resources/js/components/List.vue ***!
@@ -29836,6 +30297,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CardEditor_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CardEditor.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CardEditor.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CardEditor_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/CardEditorAdd.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/CardEditorAdd.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CardEditorAdd_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CardEditorAdd.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CardEditorAdd.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CardEditorAdd_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -29949,6 +30426,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/CardEditorAdd.vue?vue&type=template&id=dd12072e&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/CardEditorAdd.vue?vue&type=template&id=dd12072e& ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CardEditorAdd_vue_vue_type_template_id_dd12072e___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CardEditorAdd_vue_vue_type_template_id_dd12072e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CardEditorAdd_vue_vue_type_template_id_dd12072e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CardEditorAdd.vue?vue&type=template&id=dd12072e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CardEditorAdd.vue?vue&type=template&id=dd12072e&");
+
+
+/***/ }),
+
 /***/ "./resources/js/components/List.vue?vue&type=template&id=1856aeee&scoped=true&":
 /*!*************************************************************************************!*\
   !*** ./resources/js/components/List.vue?vue&type=template&id=1856aeee&scoped=true& ***!
@@ -29997,7 +30491,21 @@ var render = function () {
             "div",
             { staticClass: "flex flex-1 items-start overflow-x-auto mx-2" },
             _vm._l(_vm.board.lists, function (list) {
-              return _c("List", { key: list.id, attrs: { list: list } })
+              return _c("List", {
+                key: list.id,
+                attrs: { list: list },
+                on: {
+                  "card-deleted": function ($event) {
+                    return _vm.updateQueryCache($event)
+                  },
+                  "card-added": function ($event) {
+                    return _vm.updateQueryCache($event)
+                  },
+                  "card-updated": function ($event) {
+                    return _vm.updateQueryCache($event)
+                  },
+                },
+              })
             }),
             1
           )
@@ -30093,36 +30601,71 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    {
-      staticClass:
-        "group shadow-card flex justify-between bg-white rounded-sm p-2 cursor-pointer text-sm hover:bg-gray-50 mb-2",
-    },
-    [_c("div", [_vm._v(_vm._s(_vm.card.title))]), _vm._v(" "), _vm._m(0)]
+    [
+      !_vm.editing
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "group shadow-card flex justify-between bg-white rounded-sm p-2 cursor-pointer text-sm hover:bg-gray-50 mb-2",
+            },
+            [
+              _c("div", [_vm._v(_vm._s(_vm.card.title))]),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "flex font-bold opacity-0 group-hover:opacity-100 transition-opacity ease-out duration-300",
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "text-gray-500 pr-2 hover:text-blue-900",
+                      on: {
+                        click: function ($event) {
+                          _vm.editing = true
+                        },
+                      },
+                    },
+                    [_vm._v("E")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "text-gray-500 hover:text-red-900",
+                      on: { click: _vm.cardDelete },
+                    },
+                    [_vm._v("D")]
+                  ),
+                ]
+              ),
+            ]
+          )
+        : _c("CardEditor", {
+            staticClass: "mb-2",
+            attrs: { label: "Save Card" },
+            on: {
+              closed: function ($event) {
+                _vm.editing = false
+              },
+              saved: _vm.cardUpdate,
+            },
+            model: {
+              value: _vm.title,
+              callback: function ($$v) {
+                _vm.title = $$v
+              },
+              expression: "title",
+            },
+          }),
+    ],
+    1
   )
 }
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass:
-          "flex font-bold opacity-0 group-hover:opacity-100 transition-opacity ease-out duration-300",
-      },
-      [
-        _c("div", { staticClass: "text-gray-500 pr-2 hover:text-blue-900" }, [
-          _vm._v("E"),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "text-gray-500 hover:text-red-900" }, [
-          _vm._v("D"),
-        ]),
-      ]
-    )
-  },
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -30147,19 +30690,11 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("textarea", {
-      directives: [
-        {
-          name: "model",
-          rawName: "v-model",
-          value: _vm.title,
-          expression: "title",
-        },
-      ],
       ref: "card",
       staticClass:
         "shadow-card rounded-md py-1 px-2 outline-none w-full text-gray-700 text-sm bg-white h-16 resize-none",
       attrs: { name: "", placeholder: "Enter text for this card..." },
-      domProps: { value: _vm.title },
+      domProps: { value: _vm.value },
       on: {
         keyup: [
           function ($event) {
@@ -30178,14 +30713,11 @@ var render = function () {
             ) {
               return null
             }
-            return _vm.addCard.apply(null, arguments)
+            return _vm.saved.apply(null, arguments)
           },
         ],
         input: function ($event) {
-          if ($event.target.composing) {
-            return
-          }
-          _vm.title = $event.target.value
+          return _vm.$emit("input", $event.target.value)
         },
       },
     }),
@@ -30196,9 +30728,9 @@ var render = function () {
         {
           staticClass:
             "rounded-sm py-1 px-2 bg-indigo-600 text-white cursor-pointer hover:bg-indigo-400 outline-none",
-          on: { click: _vm.addCard },
+          on: { click: _vm.saved },
         },
-        [_vm._v("Add Card")]
+        [_vm._v(_vm._s(_vm.label))]
       ),
       _vm._v(" "),
       _c(
@@ -30212,6 +30744,41 @@ var render = function () {
       ),
     ]),
   ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CardEditorAdd.vue?vue&type=template&id=dd12072e&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CardEditorAdd.vue?vue&type=template&id=dd12072e& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("CardEditor", {
+    attrs: { label: "Add Card" },
+    on: { closed: _vm.closed, saved: _vm.addCard },
+    model: {
+      value: _vm.title,
+      callback: function ($$v) {
+        _vm.title = $$v
+      },
+      expression: "title",
+    },
+  })
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -30247,15 +30814,38 @@ var render = function () {
       ]),
       _vm._v(" "),
       _vm._l(_vm.list.cards, function (card) {
-        return _c("Card", { key: card.id, attrs: { card: card } })
+        return _c("Card", {
+          key: card.id,
+          attrs: { card: card },
+          on: {
+            deleted: function ($event) {
+              return _vm.$emit(
+                "card-deleted",
+                Object.assign({}, $event, { listId: _vm.list.id })
+              )
+            },
+            updated: function ($event) {
+              return _vm.$emit(
+                "card-updated",
+                Object.assign({}, $event, { listId: _vm.list.id })
+              )
+            },
+          },
+        })
       }),
       _vm._v(" "),
       _vm.editing
-        ? _c("CardEditor", {
+        ? _c("CardEditorAdd", {
             attrs: { list: _vm.list },
             on: {
               closed: function ($event) {
                 _vm.editing = false
+              },
+              added: function ($event) {
+                return _vm.$emit(
+                  "card-added",
+                  Object.assign({}, $event, { listId: _vm.list.id })
+                )
               },
             },
           })

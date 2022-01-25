@@ -3,8 +3,8 @@
         <div class="flex justify-between">
         <div class="text-gray-700 pl-2 pb-2 font-bold">{{ list.title }}</div>
         </div>
-        <Card v-for="card in list.cards" :key="card.id" :card="card"></Card>
-        <CardEditor v-if="editing" @closed="editing=false" :list="list"></CardEditor>
+        <Card v-for="card in list.cards" :key="card.id" :card="card" @deleted="$emit('card-deleted', {...$event, listId: list.id})" @updated="$emit('card-updated', {...$event, listId: list.id})"></Card>
+        <CardEditorAdd v-if="editing" @closed="editing=false" :list="list" @added="$emit('card-added', {...$event, listId: list.id})"></CardEditorAdd>
         <AddCard v-else @click="editing=true"></AddCard>
     </div>
 </template>
@@ -12,10 +12,10 @@
 <script>
 import Card from './Card';
 import AddCard from './AddCard';
-import CardEditor from './CardEditor';
+import CardEditorAdd from './CardEditorAdd';
 
 export default {
-    components: {Card, AddCard, CardEditor},
+    components: {Card, AddCard, CardEditorAdd},
     props: {
         list: Object
     },
