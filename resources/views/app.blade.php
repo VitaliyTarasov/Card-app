@@ -9,9 +9,9 @@
         <script src="{{ mix('js/app.js') }}" defer></script>
     
     </head>
-    <body class="text-gray-600 bg-purple-500">
-        <div id="app" class="h-ful">
-            <Board></Board> 
+    <body class="h-screen text-gray-600">
+        <div id="app" class="h-full">
+            <router-view></router-view>
         </div>
     </body>
 </html>
