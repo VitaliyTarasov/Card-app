@@ -6,13 +6,13 @@
             </div>
             <div class="w-full sm:shadow-xl sm:bg-white sm:py-10 sm:px-12">
                 <div class="w-full text-2xl text-center text-gray-600 font-bold mb-8">Log in</div>
-                <form action="">
+                <form @submit.prevent="authenticate">
                     <div class="w-full mb-5">
-                        <input type="text" class="rounded-sm px-4 py-2 outline-none focus:outline-none border-gray-400 bg-gray-100 border-solid border-2 w-full text-sm"
+                        <input type="text" v-model="email" class="rounded-sm px-4 py-2 outline-none focus:outline-none border-gray-400 bg-gray-100 border-solid border-2 w-full text-sm"
                         placeholder="Enter email">
                     </div>
                     <div class="w-full mb-5">
-                        <input type="password" class="rounded-sm px-4 py-2 outline-none focus:outline-none border-gray-400 bg-gray-100 border-solid border-2 w-full text-sm"
+                        <input type="password" v-model="password" class="rounded-sm px-4 py-2 outline-none focus:outline-none border-gray-400 bg-gray-100 border-solid border-2 w-full text-sm"
                         placeholder="Enter password">
                     </div>
                     <div class="w-full mb-6">
@@ -28,6 +28,32 @@
         </div>
     </div>
 </template>
+
+<script>
+import Login from './graphql/Login.gql';
+
+export default {
+    data() {
+        return {
+            email: null,
+            password: null
+        };
+    },
+    methods: {
+        authenticate() {
+            this.$apollo.mutate({
+                mutation: Login,
+                variables: {
+                    email: this.email,
+                    password: this.password
+                }
+            });
+        }
+    }
+}
+</script>
+
+
 
 <style scoped>
 .container {

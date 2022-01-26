@@ -26,7 +26,7 @@
 
         GraphQLPlayground.init(root, {
             endpoint: "{{url(config('graphql-playground.endpoint'))}}",
-            subscriptionEndpoint: "{{config('graphql-playground.subscriptionEndpoint')}}",
+            // subscriptionEndpoint: "{{config('graphql-playground.subscriptionEndpoint')}}",
             settings: {
                 'request.credentials': 'same-origin',
             },
