@@ -5,9 +5,12 @@
                 <span>Card App</span>
             </div>
             <div class="w-full sm:shadow-xl sm:bg-white sm:py-10 sm:px-12">
-                <div class="w-full text-2xl text-center text-gray-600 font-bold mb-8">Log in</div>
+                <div class="w-full text-2xl text-center text-gray-600 font-bold mb-6">Log in</div>
+                <div v-if="errors.length" class="p-2  text-red-600 rounded-sm text-center">
+                    <div v-for="(error, index) in errors" :key="index">{{ error.message }}</div>
+                </div>
                 <form @submit.prevent="authenticate">
-                    <div class="w-full mb-5">
+                    <div class="w-full my-5">
                         <input type="text" v-model="email" class="rounded-sm px-4 py-2 outline-none focus:outline-none border-gray-400 bg-gray-100 border-solid border-2 w-full text-sm"
                         placeholder="Enter email">
                     </div>
@@ -31,23 +34,32 @@
 
 <script>
 import Login from './graphql/Login.gql';
+import {gqlErrors} from './utils';
 
 export default {
     data() {
         return {
             email: null,
-            password: null
+            password: null,
+            errors: [],
         };
     },
     methods: {
-        authenticate() {
-            this.$apollo.mutate({
-                mutation: Login,
-                variables: {
-                    email: this.email,
-                    password: this.password
-                }
-            });
+        async authenticate() {
+            this.errors = [];
+
+            try {
+                await this.$apollo.mutate({
+                    mutation: Login,
+                    variables: {
+                        email: this.email,
+                        password: this.password
+                    }
+                });
+            } catch (err) {
+                console.log(gqlErrors(err));
+                this.errors = gqlErrors(err);
+            }
         }
     }
 }

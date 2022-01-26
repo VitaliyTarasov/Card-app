@@ -27,6 +27,7 @@ type Mutation {
     cardUpdate(id: ID!, title: String): Card @update
     login(email: String!, password: String!): User!
     logout: User @guard 
+    register(email: String!, name: String!, password: String! @hash): User @create
 }
 
 "Account of a person who utilizes this application."
