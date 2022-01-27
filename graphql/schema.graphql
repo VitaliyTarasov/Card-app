@@ -19,6 +19,7 @@ type Query {
     ): [User!]! @paginate(defaultCount: 10)
 
     board(id: ID! @eq): Board @find
+    me: User @auth
 }
 
 type Mutation {
