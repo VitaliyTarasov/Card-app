@@ -6,9 +6,7 @@
             </div>
             <div class="w-full sm:shadow-xl sm:bg-white sm:py-10 sm:px-12">
                 <div class="w-full text-2xl text-center text-gray-600 font-bold mb-6">Log in</div>
-                <div v-if="errors.length" class="p-2  text-red-600 rounded-sm text-center">
-                    <div v-for="(error, index) in errors" :key="index">{{ error.message }}</div>
-                </div>
+                <Errors :errors="errors"></Errors>
                 <form @submit.prevent="authenticate">
                     <div class="w-full my-5">
                         <input type="text" v-model="email" class="rounded-sm px-4 py-2 outline-none focus:outline-none border-gray-400 bg-gray-100 border-solid border-2 w-full text-sm"
@@ -35,8 +33,10 @@
 <script>
 import Login from './graphql/Login.gql';
 import {gqlErrors} from './utils';
+import Errors from './components/Errors';
 
 export default {
+    components: {Errors},
     data() {
         return {
             email: null,

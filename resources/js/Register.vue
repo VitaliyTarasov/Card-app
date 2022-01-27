@@ -6,6 +6,7 @@
             </div>
             <div class="w-full sm:shadow-xl sm:bg-white sm:py-10 sm:px-12">
                 <div class="w-full text-2xl text-center text-gray-600 font-bold mb-8">Sign up</div>
+                <Errors :errors="errors"></Errors>
                 <form @submit.prevent="register">
                     <div class="w-full mb-5">
                         <input type="text" class="rounded-sm px-4 py-2 outline-none focus:outline-none border-gray-400 bg-gray-100 border-solid border-2 w-full text-sm"
@@ -36,8 +37,10 @@
 <script>
 import Register from './graphql/Register.gql';
 import {gqlErrors} from './utils';
+import Errors from './components/Errors';
 
 export default {
+    components: {Errors},
     data() {
         return {
             email: null,
@@ -59,11 +62,11 @@ export default {
                         password: this.password,
                     }
                 });
+                this.$router.push({ name: "board" });
             } catch (err) {
-                thos.errors = gqlErrors(err);
+                this.errors = gqlErrors(err);
             }
 
-            this.$router.push({ name: "board" });
         }
     },
 }
