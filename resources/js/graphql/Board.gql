@@ -1,4 +1,4 @@
-query Board($id: ID!){
+query Board($id: ID!) {
     board(id: $id) {
         id
         title
@@ -7,10 +7,18 @@ query Board($id: ID!){
             id
             title
             board_id
+            board {
+                user {
+                    id
+                }
+            }
             cards {
                 id
                 title
                 order
+                user {
+                    id
+                }
             }
         }
     }

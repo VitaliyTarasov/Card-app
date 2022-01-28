@@ -5,7 +5,7 @@
         </div>
         <Card v-for="card in list.cards" :key="card.id" :card="card" @deleted="$emit('card-deleted', {...$event, listId: list.id})" @updated="$emit('card-updated', {...$event, listId: list.id})"></Card>
         <CardEditorAdd v-if="editing" @closed="editing=false" :list="list" @added="$emit('card-added', {...$event, listId: list.id})"></CardEditorAdd>
-        <AddCard v-else @click="editing=true"></AddCard>
+        <AddCard v-if="!editing && canAddCard" @click="editing=true"></AddCard>
     </div>
 </template>
 
@@ -13,6 +13,7 @@
 import Card from './Card';
 import AddCard from './AddCard';
 import CardEditorAdd from './CardEditorAdd';
+import { mapState } from 'vuex';
 
 export default {
     components: {Card, AddCard, CardEditorAdd},
@@ -23,7 +24,12 @@ export default {
         return {
             editing: false,
         }
-    }
+    },
+    computed: mapState({
+        canAddCard(state) {
+            return this.list.board.user.id == state.user.id;
+        }
+    })
 };
 </script>
 

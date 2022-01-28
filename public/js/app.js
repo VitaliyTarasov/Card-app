@@ -7589,13 +7589,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _graphql_Logout_gql__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./graphql/Logout.gql */ "./resources/js/graphql/Logout.gql");
 /* harmony import */ var _graphql_Logout_gql__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_graphql_Logout_gql__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./constants */ "./resources/js/constants.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./utils */ "./resources/js/utils.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -7629,6 +7636,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+
 
 
 
@@ -7640,17 +7648,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   components: {
     List: _components_List__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_5__.mapState)({
+  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_6__.mapState)({
     isLoggedIn: "isLoggedIn",
     name: function name(state) {
       return state.user.name;
+    }
+  })), {}, {
+    bgColor: function bgColor() {
+      var _this$board;
+
+      return _defineProperty({
+        "bg-gray-500": this.$apollo.loading
+      }, _utils__WEBPACK_IMPORTED_MODULE_5__.colorMap400[(_this$board = this.board) === null || _this$board === void 0 ? void 0 : _this$board.color], true);
     }
   }),
   apollo: {
     board: {
       query: (_graphql_Board_gql__WEBPACK_IMPORTED_MODULE_2___default()),
-      variables: {
-        id: 1
+      variables: function variables() {
+        return {
+          id: Number(this.$route.params.id)
+        };
       }
     }
   },
@@ -7804,6 +7822,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var _response$data, response, user;
+
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -7820,26 +7840,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 4:
-                _this.$store.dispatch('setLoggedIn', true);
+                response = _context.sent;
+                user = (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.login;
 
-                _this.$router.push({
-                  name: "board"
-                });
+                if (user) {
+                  _this.$store.dispatch('setLoggedIn', true);
 
-                _context.next = 11;
+                  _this.$store.commit('setUser', user);
+
+                  _this.$router.push({
+                    name: 'board'
+                  });
+                }
+
+                _context.next = 12;
                 break;
 
-              case 8:
-                _context.prev = 8;
+              case 9:
+                _context.prev = 9;
                 _context.t0 = _context["catch"](1);
                 _this.errors = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.gqlErrors)(_context.t0);
 
-              case 11:
+              case 12:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[1, 8]]);
+        }, _callee, null, [[1, 9]]);
       }))();
     }
   }
@@ -7926,6 +7953,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var _response$data, response, user;
+
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -7943,26 +7972,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 4:
-                _this.$store.dispatch('setLoggedIn', true);
+                response = _context.sent;
+                user = (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.register;
 
-                _this.$router.push({
-                  name: "board"
-                });
+                if (user) {
+                  _this.$store.dispatch('setLoggedIn', true);
 
-                _context.next = 11;
+                  _this.$store.commit('setUser', user);
+
+                  _this.$router.push({
+                    name: 'board'
+                  });
+                }
+
+                _context.next = 12;
                 break;
 
-              case 8:
-                _context.prev = 8;
+              case 9:
+                _context.prev = 9;
                 _context.t0 = _context["catch"](1);
                 _this.errors = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.gqlErrors)(_context.t0);
 
-              case 11:
+              case 12:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[1, 8]]);
+        }, _callee, null, [[1, 9]]);
       }))();
     }
   }
@@ -7981,12 +8017,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../graphql/CardDelete.gql */ "./resources/js/graphql/CardDelete.gql");
-/* harmony import */ var _graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../graphql/CardUpdate.gql */ "./resources/js/graphql/CardUpdate.gql");
-/* harmony import */ var _graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../constants */ "./resources/js/constants.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../graphql/CardDelete.gql */ "./resources/js/graphql/CardDelete.gql");
+/* harmony import */ var _graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../graphql/CardUpdate.gql */ "./resources/js/graphql/CardUpdate.gql");
+/* harmony import */ var _graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _CardEditor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CardEditor */ "./resources/js/components/CardEditor.vue");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./../constants */ "./resources/js/constants.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 //
 //
 //
@@ -8000,6 +8045,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 
@@ -8018,42 +8064,99 @@ __webpack_require__.r(__webpack_exports__);
       title: this.card.title
     };
   },
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_5__.mapState)({
+    userId: function userId(state) {
+      return state.user.id;
+    }
+  }),
   methods: {
     cardDelete: function cardDelete() {
-      var self = this;
-      this.$apollo.mutate({
-        mutation: (_graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_0___default()),
-        variables: {
-          id: this.card.id
-        },
-        update: function update(store, _ref) {
-          var cardDelete = _ref.data.cardDelete;
-          self.$emit("deleted", {
-            store: store,
-            data: cardDelete,
-            type: _constants__WEBPACK_IMPORTED_MODULE_2__.EVENT_CARD_DELETED
-          });
-        }
-      });
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var self;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.prev = 0;
+                self = _this;
+                _context.next = 4;
+                return _this.$apollo.mutate({
+                  mutation: (_graphql_CardDelete_gql__WEBPACK_IMPORTED_MODULE_1___default()),
+                  variables: {
+                    id: _this.card.id
+                  },
+                  update: function update(store, _ref) {
+                    var cardDelete = _ref.data.cardDelete;
+                    self.$emit("deleted", {
+                      store: store,
+                      data: cardDelete,
+                      type: _constants__WEBPACK_IMPORTED_MODULE_4__.EVENT_CARD_DELETED
+                    });
+                  }
+                });
+
+              case 4:
+                _context.next = 8;
+                break;
+
+              case 6:
+                _context.prev = 6;
+                _context.t0 = _context["catch"](0);
+
+              case 8:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[0, 6]]);
+      }))();
     },
     cardUpdate: function cardUpdate() {
-      var self = this;
-      this.$apollo.mutate({
-        mutation: (_graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_1___default()),
-        variables: {
-          id: this.card.id,
-          title: this.title
-        },
-        update: function update(store, _ref2) {
-          var cardUpdate = _ref2.data;
-          self.$emit("updated", {
-            store: store,
-            data: cardUpdate,
-            type: _constants__WEBPACK_IMPORTED_MODULE_2__.EVENT_CARD_UPDATED
-          });
-          self.editing = false;
-        }
-      });
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var self;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.prev = 0;
+                self = _this2;
+                _context2.next = 4;
+                return _this2.$apollo.mutate({
+                  mutation: (_graphql_CardUpdate_gql__WEBPACK_IMPORTED_MODULE_2___default()),
+                  variables: {
+                    id: _this2.card.id,
+                    title: _this2.title
+                  },
+                  update: function update(store, _ref2) {
+                    var cardUpdate = _ref2.data;
+                    self.$emit("updated", {
+                      store: store,
+                      data: cardUpdate,
+                      type: _constants__WEBPACK_IMPORTED_MODULE_4__.EVENT_CARD_UPDATED
+                    });
+                    self.editing = false;
+                  }
+                });
+
+              case 4:
+                _context2.next = 8;
+                break;
+
+              case 6:
+                _context2.prev = 6;
+                _context2.t0 = _context2["catch"](0);
+
+              case 8:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[0, 6]]);
+      }))();
     }
   }
 });
@@ -8122,19 +8225,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _graphql_CardAdd_gql__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_graphql_CardAdd_gql__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../graphql/Board.gql */ "./resources/js/graphql/Board.gql");
 /* harmony import */ var _graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_graphql_Board_gql__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../constants */ "./resources/js/constants.js");
-/* harmony import */ var _CardEditor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CardEditor */ "./resources/js/components/CardEditor.vue");
+/* harmony import */ var _CardEditor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CardEditor */ "./resources/js/components/CardEditor.vue");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../constants */ "./resources/js/constants.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 //
 //
 //
 //
+
 
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
-    CardEditor: _CardEditor__WEBPACK_IMPORTED_MODULE_3__["default"]
+    CardEditor: _CardEditor__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   props: {
     list: Object
@@ -8144,9 +8249,14 @@ __webpack_require__.r(__webpack_exports__);
       title: null
     };
   },
-  mounted: function mounted() {
-    this.$refs.card.focus();
-  },
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapState)({
+    userId: function userId(state) {
+      return state.userId;
+    }
+  }),
+  // mounted() {
+  //     this.$refs.card.focus();
+  // },
   methods: {
     addCard: function addCard() {
       var self = this;
@@ -8155,14 +8265,15 @@ __webpack_require__.r(__webpack_exports__);
         variables: {
           title: this.title,
           listId: this.list.id,
-          order: this.list.cards.length + 1
+          order: this.list.cards.length + 1,
+          userId: this.userId
         },
         update: function update(store, _ref) {
           var cardAdd = _ref.data.cardAdd;
           self.$emit("added", {
             store: store,
             data: cardAdd,
-            type: _constants__WEBPACK_IMPORTED_MODULE_2__.EVENT_CARD_ADDED
+            type: _constants__WEBPACK_IMPORTED_MODULE_3__.EVENT_CARD_ADDED
           });
           self.closed();
         }
@@ -8218,6 +8329,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Card__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Card */ "./resources/js/components/Card.vue");
 /* harmony import */ var _AddCard__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddCard */ "./resources/js/components/AddCard.vue");
 /* harmony import */ var _CardEditorAdd__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CardEditorAdd */ "./resources/js/components/CardEditorAdd.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 //
 //
 //
@@ -8229,6 +8341,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 
@@ -8245,7 +8358,12 @@ __webpack_require__.r(__webpack_exports__);
     return {
       editing: false
     };
-  }
+  },
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapState)({
+    canAddCard: function canAddCard(state) {
+      return this.list.board.user.id == state.user.id;
+    }
+  })
 });
 
 /***/ }),
@@ -8261,21 +8379,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var apollo_boost__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! apollo-boost */ "./node_modules/apollo-boost/lib/bundle.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var apollo_boost__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! apollo-boost */ "./node_modules/apollo-boost/lib/bundle.esm.js");
 /* harmony import */ var vue_apollo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-apollo */ "./node_modules/vue-apollo/dist/vue-apollo.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./resources/js/utils.js");
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vue_apollo__WEBPACK_IMPORTED_MODULE_0__["default"]);
-var apolloClient = new apollo_boost__WEBPACK_IMPORTED_MODULE_2__["default"]({
+
+
+
+vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_apollo__WEBPACK_IMPORTED_MODULE_0__["default"]);
+var apolloClient = new apollo_boost__WEBPACK_IMPORTED_MODULE_3__["default"]({
   uri: "http://127.0.0.1:8000/graphql",
   headers: {
     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
   },
   credentials: "include",
   onError: function onError(err) {
-    return console.log('A global error');
+    try {
+      (0,_utils__WEBPACK_IMPORTED_MODULE_1__.gqlErrors)(err);
+    } catch (_unused) {
+      if (err instanceof _utils__WEBPACK_IMPORTED_MODULE_1__.AuthError) {
+        vuex__WEBPACK_IMPORTED_MODULE_4__["default"].dispatch("logout");
+      }
+    }
   }
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vue_apollo__WEBPACK_IMPORTED_MODULE_0__["default"]({
@@ -8376,7 +8505,7 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_3__["default"].use(vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]);
 var routes = [{
-  path: "/",
+  path: "/board/:id",
   name: "board",
   component: _Board_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
 }, {
@@ -8404,8 +8533,38 @@ var routes = [{
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "gqlErrors": () => (/* binding */ gqlErrors)
+/* harmony export */   "gqlErrors": () => (/* binding */ gqlErrors),
+/* harmony export */   "AuthError": () => (/* binding */ AuthError),
+/* harmony export */   "colorMap400": () => (/* binding */ colorMap400)
 /* harmony export */ });
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
+
+function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 function gqlErrors(err) {
   var hasInternal = function hasInternal(errors) {
     return errors.some(function (e) {
@@ -8418,6 +8577,10 @@ function gqlErrors(err) {
       return !e.internal;
     }).concat(err) : errors;
   };
+
+  if (err !== null && err !== void 0 && err.networkError && err.networkError.statusCode === 419) {
+    throw new AuthError("Unauthenticated");
+  }
 
   return replaceInternal(((err === null || err === void 0 ? void 0 : err.graphQLErrors) || []).map(function (error) {
     var _error$extensions, _error$path;
@@ -8447,6 +8610,30 @@ function gqlErrors(err) {
     message: 'Something bad happend'
   }).flat();
 }
+var AuthError = /*#__PURE__*/function (_Error) {
+  _inherits(AuthError, _Error);
+
+  var _super = _createSuper(AuthError);
+
+  function AuthError() {
+    _classCallCheck(this, AuthError);
+
+    return _super.apply(this, arguments);
+  }
+
+  return _createClass(AuthError);
+}( /*#__PURE__*/_wrapNativeSuper(Error));
+var colorMap400 = {
+  teal: "bg-teal-400",
+  orange: "bg-orange-400",
+  gray: "bg-gray-400",
+  yellow: "bg-yellow-400",
+  purple: "bg-purple-400",
+  red: "bg-red-400",
+  green: "bg-green-400",
+  blue: "bg-blue-400",
+  indigo: "bg-indigo-400"
+};
 
 /***/ }),
 
@@ -8598,7 +8785,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.header[data-v-36375f90] {\n    height: 50px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.header[data-v-36375f90] {\n    height: 50px;\n    background-color: rgba(0,0,0,0.3);\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -8972,8 +9159,8 @@ gql["default"] = gql;
 /***/ ((module) => {
 
 
-    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Board"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"board"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"color"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"lists"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"board_id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"cards"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"order"},"arguments":[],"directives":[]}]}}]}}]}}]}}],"loc":{"start":0,"end":267}};
-    doc.loc.source = {"body":"query Board($id: ID!){\n    board(id: $id) {\n        id\n        title\n        color\n        lists {\n            id\n            title\n            board_id\n            cards {\n                id\n                title\n                order\n            }\n        }\n    }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
+    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Board"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"board"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"color"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"lists"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"board_id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"board"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"cards"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"order"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]}]}}]}}]}}]}}]}}],"loc":{"start":0,"end":430}};
+    doc.loc.source = {"body":"query Board($id: ID!) {\n    board(id: $id) {\n        id\n        title\n        color\n        lists {\n            id\n            title\n            board_id\n            board {\n                user {\n                    id\n                }\n            }\n            cards {\n                id\n                title\n                order\n                user {\n                    id\n                }\n            }\n        }\n    }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
   
 
     var names = {};
@@ -9104,8 +9291,8 @@ gql["default"] = gql;
 /***/ ((module) => {
 
 
-    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CardAdd"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"title"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"order"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"listId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cardAdd"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"title"},"value":{"kind":"Variable","name":{"kind":"Name","value":"title"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"list_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"listId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"order"},"value":{"kind":"Variable","name":{"kind":"Name","value":"order"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"user_id"},"value":{"kind":"IntValue","value":"1"}}]}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"order"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":206}};
-    doc.loc.source = {"body":"mutation CardAdd($title: String! $order: Int!, $listId: ID!) {\n    cardAdd(\n        input: {title: $title, list_id: $listId, order: $order, user_id: 1}\n    ) {\n        id\n        title\n        order\n    }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
+    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CardAdd"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"title"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"order"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"listId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cardAdd"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"title"},"value":{"kind":"Variable","name":{"kind":"Name","value":"title"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"list_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"listId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"order"},"value":{"kind":"Variable","name":{"kind":"Name","value":"order"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"user_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}]}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"order"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]}]}}]}}]}}],"loc":{"start":0,"end":322}};
+    doc.loc.source = {"body":"mutation CardAdd($title: String!, $order: Int!, $listId: ID!, $userId: ID!) {\n    cardAdd(\n        input: {\n            title: $title\n            list_id: $listId\n            order: $order\n            user_id: $userId\n        }\n    ) {\n        id\n        title\n        order\n        user {\n            id\n        }\n    }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
   
 
     var names = {};
@@ -32706,13 +32893,13 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "h-full flex flex-col items-stretch bg-purple-500" },
+    { staticClass: "h-full flex flex-col items-stretch", class: _vm.bgColor },
     [
       _c(
         "div",
         {
           staticClass:
-            "header text-white flex justify-between items-center mb-2 bg-purple-400",
+            "header text-white flex justify-between items-center mb-2",
         },
         [
           _c("div", { staticClass: "ml-2 w-1/3" }, [_vm._v("x")]),
@@ -33242,36 +33429,38 @@ var render = function () {
             [
               _c("div", [_vm._v(_vm._s(_vm.card.title))]),
               _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass:
-                    "flex font-bold opacity-0 group-hover:opacity-100 transition-opacity ease-out duration-300",
-                },
-                [
-                  _c(
+              _vm.card.user_id === _vm.userId
+                ? _c(
                     "div",
                     {
-                      staticClass: "text-gray-500 pr-2 hover:text-blue-900",
-                      on: {
-                        click: function ($event) {
-                          _vm.editing = true
+                      staticClass:
+                        "flex font-bold opacity-0 group-hover:opacity-100 transition-opacity ease-out duration-300",
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "text-gray-500 pr-2 hover:text-blue-900",
+                          on: {
+                            click: function ($event) {
+                              _vm.editing = true
+                            },
+                          },
                         },
-                      },
-                    },
-                    [_vm._v("E")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass: "text-gray-500 hover:text-red-900",
-                      on: { click: _vm.cardDelete },
-                    },
-                    [_vm._v("D")]
-                  ),
-                ]
-              ),
+                        [_vm._v("E")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "text-gray-500 hover:text-red-900",
+                          on: { click: _vm.cardDelete },
+                        },
+                        [_vm._v("D")]
+                      ),
+                    ]
+                  )
+                : _vm._e(),
             ]
           )
         : _c("CardEditor", {
@@ -33513,13 +33702,17 @@ var render = function () {
               },
             },
           })
-        : _c("AddCard", {
+        : _vm._e(),
+      _vm._v(" "),
+      !_vm.editing && _vm.canAddCard
+        ? _c("AddCard", {
             on: {
               click: function ($event) {
                 _vm.editing = true
               },
             },
-          }),
+          })
+        : _vm._e(),
     ],
     2
   )

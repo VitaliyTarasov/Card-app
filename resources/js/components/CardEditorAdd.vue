@@ -5,8 +5,9 @@
 <script>
 import CardAdd from "./../graphql/CardAdd.gql";
 import BoardQuery from "./../graphql/Board.gql";
-import { EVENT_CARD_ADDED } from "./../constants";
 import CardEditor from "./CardEditor";
+import { EVENT_CARD_ADDED } from "./../constants";
+import { mapState } from "vuex";
 
 export default {
     components: {CardEditor},
@@ -18,9 +19,12 @@ export default {
             title: null
         };
     },
-    mounted() {
-        this.$refs.card.focus();
-    },
+    computed: mapState({
+        userId: state => state.userId
+    }),
+    // mounted() {
+    //     this.$refs.card.focus();
+    // },
     methods: {
         addCard() {
             const self = this;
@@ -29,7 +33,8 @@ export default {
                 variables: {
                     title: this.title,
                     listId: this.list.id,
-                    order: this.list.cards.length + 1
+                    order: this.list.cards.length + 1,
+                    userId: this.userId 
                 },
                 update(store, {data: {cardAdd} }) {
                     self.$emit("added", {

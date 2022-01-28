@@ -2,9 +2,9 @@
     <div>
         <div v-if="!editing" class="group shadow-card flex justify-between bg-white rounded-sm p-2 cursor-pointer text-sm hover:bg-gray-50 mb-2">
             <div>{{ card.title }}</div>
-            <div class="flex font-bold opacity-0 group-hover:opacity-100 transition-opacity ease-out duration-300">
+            <div class="flex font-bold opacity-0 group-hover:opacity-100 transition-opacity ease-out duration-300" v-if="card.user_id === userId">
                 <div class="text-gray-500 pr-2 hover:text-blue-900" @click="editing=true">E</div>
-                <div @click="cardDelete" class="text-gray-500 hover:text-red-900">D</div>
+                <div @click="cardDelete" class="text-gray-500 hover:text-red-900" >D</div>
             </div>
         </div>
         <CardEditor v-else v-model="title" class="mb-2" label="Save Card" @closed="editing=false" @saved="cardUpdate"></CardEditor>
@@ -14,9 +14,10 @@
 <script>
 import CardDelete from './../graphql/CardDelete.gql';
 import CardUpdate from './../graphql/CardUpdate.gql';
+import CardEditor from './CardEditor';
 import { EVENT_CARD_DELETED } from './../constants';
 import { EVENT_CARD_UPDATED } from './../constants';
-import CardEditor from './CardEditor';
+import { mapState } from 'vuex';
 
 export default {
     components: { CardEditor },
@@ -29,42 +30,49 @@ export default {
             title: this.card.title 
         }
     },
+    computed: mapState({
+        userId: state => state.user.id
+    }),
     methods: {
-        cardDelete() {
-            const self = this;
+        async cardDelete() {
+            try {
+                const self = this;
 
-            this.$apollo.mutate({
-                mutation: CardDelete,
-                variables: {
-                    id: this.card.id
-                },
-                update(store, {data: {cardDelete} }) {
-                    self.$emit("deleted", {
-                        store,
-                        data: cardDelete,
-                        type: EVENT_CARD_DELETED
-                    });
-                },
-            });
+                await this.$apollo.mutate({
+                    mutation: CardDelete,
+                    variables: {
+                        id: this.card.id
+                    },
+                    update(store, {data: {cardDelete} }) {
+                        self.$emit("deleted", {
+                            store,
+                            data: cardDelete,
+                            type: EVENT_CARD_DELETED
+                        });
+                    },
+                });
+            } catch (err) {}
         },
-        cardUpdate() {
-            const self = this;
+        async cardUpdate() {
+            try {
+                const self = this;
 
-            this.$apollo.mutate({
-                mutation: CardUpdate,
-                variables: {
-                    id: this.card.id,
-                    title: this.title
-                },
-                update(store, { data: cardUpdate }) {
-                    self.$emit("updated", {
-                        store,
-                        data:cardUpdate,
-                        type: EVENT_CARD_UPDATED
-                    });
-                    self.editing = false;
-                }
-            });
+                await this.$apollo.mutate({
+                    mutation: CardUpdate,
+                    variables: {
+                        id: this.card.id,
+                        title: this.title
+                    },
+                    update(store, { data: cardUpdate }) {
+                        self.$emit("updated", {
+                            store,
+                            data:cardUpdate,
+                            type: EVENT_CARD_UPDATED
+                        });
+                        self.editing = false;
+                    }
+                });
+            } catch (err) {}
         },
     }
 }
