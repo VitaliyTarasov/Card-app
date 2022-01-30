@@ -6,7 +6,7 @@
 @layer components {
     .header-btn {
         background-color: hsla(0, 0%, 100%, 0.3);
-        @apply rounded-sm px-2 py-2 text-sm font-bold outline-none whitespace-nowrap;
+        @apply rounded-sm px-2 py-2 text-sm font-bold outline-none whitespace-nowrap my-2;
     }
 
     .header-btn:focus {
@@ -16,4 +16,13 @@
     .header-btn:hover {
         @apply opacity-75;
     }
+}
+
+.appear-enter-active, .appear-leave-active {
+    transition: all 200ms ease-in;
+}
+
+.appear-enter, .appear-leave-to {
+    opacity: 0;
+    transform: translateY(20px);
 }

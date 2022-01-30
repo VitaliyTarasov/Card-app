@@ -17,7 +17,7 @@ type Query {
       "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
       name: String @where(operator: "like")
     ): [User!]! @paginate(defaultCount: 10)
-
+    userBoards(user_id: ID! @where): [Board!] @all @can(ability: "viewOwnedBoards", model: "App\\Models\\User",find: "user_id")
     board(id: ID! @eq): Board @find
     me: User @auth
 }
@@ -26,6 +26,8 @@ type Mutation {
     cardAdd(input: CardAddInput @spread): Card! @create @can(ability: "createCard", model: "App\\Models\\CardList", find: "list_id")
     cardDelete(id: ID!): Card @delete @can(ability: "delete", find: "id")
     cardUpdate(id: ID!, title: String): Card @update @can(ability: "update", find: "id")
+    boardAdd(title: String!, color: String!): Board! @create
+
     login(email: String!, password: String!): User!
     logout: User @guard 
     register(email: String! @rules(apply: ["required", "email", "unique:users"]), 
