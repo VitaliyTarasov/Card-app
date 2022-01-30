@@ -2,7 +2,7 @@
     <div>
         <div v-if="!editing" class="group shadow-card flex justify-between bg-white rounded-sm p-2 cursor-pointer text-sm hover:bg-gray-50 mb-2">
             <div>{{ card.title }}</div>
-            <div class="flex font-bold opacity-0 group-hover:opacity-100 transition-opacity ease-out duration-300" v-if="card.user_id === userId">
+            <div class="flex font-bold opacity-0 group-hover:opacity-100 transition-opacity ease-out duration-300" v-if="card.user.id === userId">
                 <div class="text-gray-500 pr-2 hover:text-blue-900" @click="editing=true">E</div>
                 <div @click="cardDelete" class="text-gray-500 hover:text-red-900" >D</div>
             </div>

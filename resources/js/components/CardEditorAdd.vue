@@ -20,11 +20,8 @@ export default {
         };
     },
     computed: mapState({
-        userId: state => state.userId
+        userId: state => state.user.id
     }),
-    // mounted() {
-    //     this.$refs.card.focus();
-    // },
     methods: {
         addCard() {
             const self = this;

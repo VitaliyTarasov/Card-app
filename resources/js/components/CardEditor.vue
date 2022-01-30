@@ -1,10 +1,9 @@
 <template>
     <div>
         <textarea 
-        name=""
         :value="value" 
         class="shadow-card rounded-md py-1 px-2 outline-none w-full text-gray-700 text-sm bg-white h-16 resize-none" 
-        placeholder="Enter text for this card..." 
+        placeholder="Enter text for this card" 
         ref="card" 
         @keyup.esc="closed" 
         @keyup.enter="saved"
@@ -21,9 +20,6 @@
 
 export default {
     props: ["value", "label"],
-    mounted() {
-        this.$refs.card.focus();
-    },
     methods: {
         closed() {
             this.$emit("closed");

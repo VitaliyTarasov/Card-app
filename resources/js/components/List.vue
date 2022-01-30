@@ -35,8 +35,5 @@ export default {
 
 
 <style scoped>
-.list{
-    width: 230px;
-    min-width: 230px;
-}
+
 </style>

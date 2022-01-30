@@ -26,8 +26,9 @@
                 @card-deleted="updateQueryCache($event)" 
                 @card-added="updateQueryCache($event)"
                 @card-updated="updateQueryCache($event)"></List>
+                <ListAddEditor :board="board.id" @added="updateQueryCache($event)"></ListAddEditor>
             </div>
-      </div>
+        </div>
     </div>
 </template>
 
@@ -35,6 +36,7 @@
 
 <script>
 import List from './components/List';
+import ListAddEditor from './components/ListAddEditor';
 import BoardQuery from './graphql/Board.gql';
 import DropdownMenu from './components/DropdownMenu';
 import UserBoardsDropdown from './components/UserBoardsDropdown';
@@ -42,11 +44,12 @@ import Logout from './graphql/Logout.gql';
 import { EVENT_CARD_ADDED } from './constants';
 import { EVENT_CARD_DELETED } from './constants';
 import { EVENT_CARD_UPDATED } from './constants';
+import { EVENT_LIST_ADDED } from './constants';
 import { mapState } from 'vuex';
 import { colorMap400 } from './utils';
 
 export default {
-    components: { List, UserBoardsDropdown },
+    components: { List, UserBoardsDropdown, ListAddEditor },
     computed: {
         ...mapState({
             isLoggedIn: "isLoggedIn",
@@ -54,7 +57,7 @@ export default {
         }),
         bgColor () {
             return {
-                "bg-gray-500": this.$apollo.loading,
+                "bg-gray-400": this.$apollo.loading,
                 [colorMap400[this.board?.color]]: true
             }
         }
@@ -87,6 +90,10 @@ export default {
             });
 
             switch (event.type) {
+                case EVENT_LIST_ADDED:
+                    data.board.lists.push(event.data);
+                    break;
+                    
                 case EVENT_CARD_ADDED:
                     data.board.lists.find(list => list.id == event.listId).cards.push(event.data);
                     break;
